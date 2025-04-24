@@ -1,0 +1,29 @@
+name: Weekly Backup
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'  # Every Sunday at midnight
+  workflow_dispatch:    # Allow manual run
+
+jobs:
+  run-backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run backup script
+        run: |
+          chmod +x backup.sh
+          ./backup.sh
+
+      - name: Commit backup archive
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add backup-*.tar.gz
+          git commit -m "📦 Weekly backup"
+          git push || echo "Nothing to commit"
+
+          
