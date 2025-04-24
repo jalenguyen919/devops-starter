@@ -2,8 +2,8 @@ name: Weekly Log Cleanup
 
 on:
   schedule:
-    - cron: '0 2 * * 0'  # Every Sunday at 2 AM
-  workflow_dispatch:
+    - cron: '0 2 * * 0'  # Runs every Sunday at 2 AM UTC
+  workflow_dispatch:     # Manual trigger for testing
 
 jobs:
   clean-logs:
@@ -18,10 +18,16 @@ jobs:
           chmod +x cleanup-logs.sh
           ./cleanup-logs.sh
 
-      - name: Commit archived logs
+      - name: Commit archived logs if any
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
-          git add *.tar.gz
-          git commit -m "📦 Archived old logs"
-          git push || echo "Nothing to commit"
+
+          if ls *.tar.gz 1> /dev/null 2>&1; then
+            echo "📦 Found archive to commit."
+            git add *.tar.gz
+            git commit -m "📦 Archived old logs"
+            git push
+          else
+            echo "🪹 No archive created — skipping commit."
+          fi
