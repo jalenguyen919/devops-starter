@@ -4,7 +4,7 @@ LOG_DIR="logs"
 ARCHIVE_NAME="old-logs-$(date +'%Y-%m-%d').tar.gz"
 
 # Find .log files older than 7 days
-OLD_LOGS=$(find $LOG_DIR -name "*.log" -mtime +7)
+OLD_LOGS=$(find $LOG_DIR -name "*.log" -mtime +1)
 
 # Only archive if old logs exist
 if [[ -n "$OLD_LOGS" ]]; then
